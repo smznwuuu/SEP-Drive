@@ -1,0 +1,74 @@
+<app-navbar></app-navbar>
+<div class="card">
+  <h2>Fahrthistorie</h2>
+
+  <div class="flex align-items-center gap-2 mb-3">
+        <span class="p-input-icon-left">
+            <!-- <i class="pi pi-search"></i> -->
+            <input pInputText type="text" [(ngModel)]="searchText" placeholder="Namen eingeben" />
+        </span>
+    <p-button label="suchen" icon="pi pi-search" (onClick)="onSearch()"></p-button>
+    <p-button label="zurücksetzen" icon="pi pi-refresh" (onClick)="onReset()" severity="secondary"></p-button>
+  </div>
+
+  <p-table
+    [value]="rides"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    (onSort)="onSort($event)"
+    [showCurrentPageReport]="false"
+    [rowsPerPageOptions]="[10,25,50]"
+    styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="requestId">Fahrt-ID <p-sortIcon field="requestId"></p-sortIcon></th>
+        <th pSortableColumn="time">Abschlussdatum <p-sortIcon field="time"></p-sortIcon></th>
+        <th pSortableColumn="distance">Distanz <p-sortIcon field="distance"></p-sortIcon></th>
+        <th pSortableColumn="duration">Fahrtdauer <p-sortIcon field="duration"></p-sortIcon></th>
+        <th pSortableColumn="price">Geld <p-sortIcon field="price"></p-sortIcon></th>
+        <th pSortableColumn="ratingcustomer">Kundenbewertung <p-sortIcon field="ratingcustomer"></p-sortIcon></th>
+        <th pSortableColumn="ratingdriver">Fahrerbewertung <p-sortIcon field="ratingdriver"></p-sortIcon></th>
+        <th pSortableColumn="customerFullName">Kunde Name <p-sortIcon field="customerFullName"></p-sortIcon></th>
+        <th pSortableColumn="customerUsername">Kunde Username <p-sortIcon field="customerUsername"></p-sortIcon></th>
+        <th pSortableColumn="driverFullName">Fahrer Name <p-sortIcon field="driverFullName"></p-sortIcon></th>
+        <th pSortableColumn="driverUsername">Fahrer Username <p-sortIcon field="driverUsername"></p-sortIcon></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ride>
+      <tr>
+        <td>{{ride.requestId}}</td>
+        <td>{{ride.time}}</td>
+        <td>{{ride.distance}} km</td>
+        <td>{{ride.durationMinutes}} min</td>
+        <td>{{ride.price}} €</td>
+        <td>
+          <p-rating [ngModel]="ride.ratingFromCustomer" [readonly]="true" [stars]="5"></p-rating>
+        </td>
+        <td>
+          <p-rating [ngModel]="ride.ratingFromDriver" [readonly]="true" [stars]="5"></p-rating>
+        </td>
+        <td>{{ride.customerFullName}}</td>
+        <td>
+          <a [routerLink]="['/profil', ride.customerUsername]">
+            {{ride.customerUsername}}
+          </a>
+        </td>
+        <td>{{ride.driverFullName}}</td>
+        <td>
+          <a [routerLink]="['/profil', ride.driverUsername]">
+            {{ride.driverUsername}}
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center">No rides found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

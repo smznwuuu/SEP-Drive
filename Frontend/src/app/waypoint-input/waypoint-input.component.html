@@ -1,0 +1,49 @@
+<h4>{{ label }}</h4>
+
+<select [(ngModel)]="option">
+  <option value="coords">Koordinaten</option>
+  <option value="address">Adresse</option>
+  <option value="poi">POI</option>
+  <option *ngIf="allowCurrentLocation" value="current">Aktuelle Position</option>
+</select>
+
+<!--koordinaten -->
+<div *ngIf="option === 'coords'">
+  <input type="number" class='border-class' [(ngModel)]="coordinate.latitude" (ngModelChange)="coordinateChange.emit(coordinate)" placeholder="Lat">
+  <input type="number" class='border-class' [(ngModel)]="coordinate.longitude" (ngModelChange)="coordinateChange.emit(coordinate)" placeholder="Lng">
+</div>
+
+<!--adresse -->
+<div *ngIf="option === 'address'">
+  <input class='border-class' [(ngModel)]="searchQuery" placeholder="Adresse suchen">
+  <button type="button" class='search-class' (click)="searchAddress()">Suchen</button>
+  <ul *ngIf="suggestions.length">
+    <li class='border-class' *ngFor="let s of suggestions" (click)="selectSuggestion(s)">
+      {{ s.display_name }}
+    </li>
+  </ul>
+</div>
+
+<!--poi -->
+<div *ngIf="option === 'poi'">
+  <select [(ngModel)]="poiCategory">
+    <option value="restaurant">Restaurant</option>
+    <option value="theater">Theater</option>
+    <option value="museum">Museum</option>
+  </select>
+  <input class='border-class' [(ngModel)]="poiOrt" placeholder="Ort">
+  <button type="button" class='search-class' (click)="searchPOIs()">Suchen</button>
+  <ul *ngIf="suggestions.length">
+    <li class ='border-class' *ngFor="let s of suggestions" (click)="selectSuggestion(s)">
+      {{ s.display_name }}
+    </li>
+  </ul>
+</div>
+
+<!--aktuelle Position -->
+<div *ngIf="option === 'current' && allowCurrentLocation">
+  <button type="button" class='border-class' (click)="useCurrentLocation()">Standort übernehmen</button>
+  <p *ngIf="coordinate.latitude && coordinate.longitude">
+    Deine Position: {{ coordinate.latitude }}, {{ coordinate.longitude }}
+  </p>
+</div>

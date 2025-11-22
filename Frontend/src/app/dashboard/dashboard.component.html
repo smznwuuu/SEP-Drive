@@ -1,0 +1,33 @@
+<app-navbar></app-navbar>
+
+<section class="dashboard">
+  <h1>Willkommen</h1>
+  <nav class="nav-links">
+<!--    dynamischer link durch property binding-->
+    <a [routerLink]="['/profil', username]">
+      Profil ansehen
+    </a>
+    <a routerLink="/leaderboard">Leaderboard</a>
+    @if (!isDriver()){
+      <a routerLink="/create-ride-request">Fahranfrage erstellen</a>
+      <a routerLink="/active-ride-request">Aktive Fahranfrage</a>
+      <a routerLink="/ride-offers">Fahrangebote</a>
+    }
+
+
+  </nav>
+
+  <section class="search">
+    <form (ngSubmit)="searchUser(usernameInput.value)">
+      <input #usernameInput type="text" placeholder="Benutzername suchen" required>
+      <button type="submit" class="primary">Suchen</button>
+    </form>
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+  </section>
+</section>
+
+
+
+

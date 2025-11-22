@@ -1,0 +1,12 @@
+.address{
+  border: solid 1px black;
+  border-radius: 5px;
+  padding: 2px;
+}
+button {
+  margin-right: 10px;
+}
+
+button:last-child {
+  margin-right: 0;
+}

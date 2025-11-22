@@ -1,0 +1,78 @@
+.profil {
+  background-color: white;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #333;
+  animation: fadeIn;
+  padding: 32px 32px 70px;
+  position: relative;
+}
+
+.profilbild {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 24px;
+  border: 3px solid #007bff;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #007bff;
+}
+
+p {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+p:last-of-type {
+  margin-bottom: 0;
+}
+
+a {
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+a:hover {
+  background-color: #0056b3;
+}
+
+.profile-actions-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.profile-actions-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.button-wrap {
+  margin-top: 12px;
+}
+
+.error {
+  text-align: center;
+  color: #b00020;
+  font-weight: bold;
+  margin-top: 20px;
+}

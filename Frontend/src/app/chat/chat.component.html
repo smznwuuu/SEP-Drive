@@ -1,0 +1,59 @@
+<app-navbar></app-navbar>
+
+<div class="chat-container">
+  <div class="chat-header">
+    Chat mit Nutzer {{ partnerId }}
+  </div>
+
+  <div class="chat-messages">
+    @for (message of messages; track message.id) {
+      <div
+        class="message-bubble"
+        [class.own]="isOwn(message)"
+        [class.partner]="!isOwn(message)"
+      >
+        <div class="message-meta">
+          <strong>{{ isOwn(message) ? 'Ich' : 'Partner' }}</strong>
+          <span>{{ message.timestamp | date:'short' }}</span>
+        </div>
+
+        @if (editingMessageId === message.id) {
+          <div class="edit-mode">
+            <textarea [(ngModel)]="editingMessageContent" rows="2"></textarea>
+            <div class="edit-actions">
+              <button (click)="saveEditedMessage()">Speichern</button>
+              <button (click)="cancelEditMessage()">Abbrechen</button>
+            </div>
+          </div>
+        } @else {
+          <div class="message-content" [class.deleted-message]="message.deleted">
+            {{ message.deleted ? '[Nachricht gelöscht]' : message.content }}
+            @if (message.edited) {
+              <span class="edited-status">(bearbeitet)</span>
+            }
+          </div>
+
+          @if (canEditOrDelete(message)) {
+            <div class="message-actions">
+              <button class="icon-button" (click)="startEditMessage(message)">
+                ✎
+              </button>
+              <button class="icon-button" (click)="deleteMessage(message)">
+                🗑
+              </button>
+            </div>
+          }
+        }
+      </div>
+    } @empty {
+      <div class="no-messages-yet">
+        Beginne die Unterhaltung!
+      </div>
+    }
+  </div>
+
+  <div class="chat-input">
+    <textarea [(ngModel)]="newMessageContent" placeholder="Nachricht schreiben..."></textarea>
+    <button (click)="sendMessage()" [disabled]="!newMessageContent.trim()">Senden</button>
+  </div>
+</div>

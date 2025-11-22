@@ -1,0 +1,136 @@
+.centeredHeading{
+  text-align: center;
+  font-size: xx-large;
+  margin-top: 2%
+}
+
+.map-container{
+  width: 50%;
+  height: 70vh;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1%;
+  border: black solid 2px;
+}
+
+.buttons-container{
+  display: flex;
+
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 2%;
+  gap: 30px;
+}
+
+.buttonStyles{
+  background-color: #3a3ae7;
+  color: white;
+  border: solid 3px #2d2dbf;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  width: fit-content;
+  transition: background-color 0.25s;
+}
+
+.buttonGroup{
+  display: flex;
+  margin-left: 30%;
+  width: fit-content;
+}
+
+.startButton{
+}
+
+.pauseButton{
+  margin-left: 40%;
+}
+
+.sliderContainer{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 5%;
+  background: #439a9a;
+  border: 5px solid #2c6e6e;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#slider{
+}
+
+.noRequestContainer{
+  display: flex;
+  background-color: #4688df;
+  width: 100vh;
+  height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+  border: #0d3770 2px solid;
+  margin-top: 10%;
+  border-radius: 5px;
+  box-shadow: #16498c 5px 5px 5px;
+}
+
+.price-container{
+  width: 50%;
+  height: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.removeButton{
+  border: solid 3px black;
+  background: red;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.stopList{
+  border: solid 4px black;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2%;
+  padding: 1%;
+}
+
+.waypointButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.addButton{
+  border: 4px dashed black;
+  padding: 1%;
+  background-color: #3a3ae7;
+  color: antiquewhite;
+  cursor: pointer;
+}
+
+.confirmButton{
+  border: 4px dashed black;
+  padding: 1%;
+  background-color: #0b9307;
+  color: antiquewhite;
+  cursor: pointer;
+}
+
+.destButton{
+  border: 4px dashed black;
+  padding: 2px;
+  background-color: #0b9307;
+  color: antiquewhite;
+  cursor: pointer;
+}
+
+.waypointInput{
+  border: solid 3px black;
+  width: fit-content;
+}

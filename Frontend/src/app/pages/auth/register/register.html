@@ -1,0 +1,88 @@
+<p-toast></p-toast>
+<!-- Two Factor Auth Dialog -->
+<app-two-factor-auth
+  *ngIf="isTwoFactorAuthVisible"
+  (onConfirm)="handleTwoFactorConfirm($event)"
+  (onClose)="handleTwoFactorClose()">
+</app-two-factor-auth>
+<div class="flex min-h-screen">
+  <!-- 左侧注册表单 -->
+  <div class="flex-1 flex items-center justify-center p-4 sm:p-8">
+    <div class="w-full max-w-md">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Create Account</h1>
+        <p class="text-gray-600">Fill in your details to create a new account.</p>
+      </div>
+
+      <form class="space-y-4" (ngSubmit)="onSubmit()">
+        <div class="flex flex-col gap-2">
+          <label for="email" class="required">Email</label>
+          <input type="email" pInputText [(ngModel)]="registerData.email" name="email" id="email" class="w-full p-3">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="required">Password</label>
+          <p-password [(ngModel)]="registerData.password" name="password" id="password" [toggleMask]="true" styleClass="w-full"></p-password>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="username" class="required">Username</label>
+          <input type="text" pInputText [(ngModel)]="registerData.username" name="username" id="username" class="w-full p-3">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="firstName" class="required">First Name</label>
+          <input type="text" pInputText [(ngModel)]="registerData.firstName" name="firstName" id="firstName" class="w-full p-3">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="lastName" class="required">Last Name</label>
+          <input type="text" pInputText [(ngModel)]="registerData.lastName" name="lastName" id="lastName" class="w-full p-3">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="required">Birth Date</label>
+          <p-datepicker [(ngModel)]="registerData.birthDate" name="birthDate" id="birthDate" [showIcon]="true" [yearRange]="yearRange" [maxDate]="maxDate" [defaultDate]="defaultDate" dateFormat="dd/mm/yy" styleClass="w-full"></p-datepicker>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="required">Role</label>
+          <p-selectButton [options]="roleOptions" [(ngModel)]="registerData.role" name="role" optionLabel="label" optionValue="value" styleClass="w-full"></p-selectButton>
+        </div>
+        <div class="flex flex-col gap-2" *ngIf="registerData.role === 'DRIVER'">
+          <label class="required">Car Class</label>
+          <p-selectButton [options]="carClassOptions" [(ngModel)]="registerData.carClass" name="carClass" optionLabel="label" optionValue="value" styleClass="w-full"></p-selectButton>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="ProfilePicture">Profile Picture(optional)</label>
+          <div class="flex flex-col">
+            <p-fileUpload #fileUpload mode="basic" name="profilePicture" accept="image/*"
+                          [maxFileSize]="1024 * 1024 * 100" chooseLabel="Choose Profile Picture" class="w-full"
+                          (onSelect)="onProfilePictureSelect($event)" [auto]="false" [disabled]="uploading"></p-fileUpload>
+
+            <!-- 上传状态和错误信息 -->
+            <small *ngIf="uploading" class="text-blue-500 mt-1">Uploading...</small>
+
+            <!-- 图片预览 -->
+            <div *ngIf="registerData.profilePicture" class="mt-3">
+              <p class="text-sm font-medium mb-1">Profile Picture Preview:</p>
+              <img [src]="registerData.profilePicture" class="w-24 h-24 object-cover border border-gray-300" alt="Profile Preview">
+            </div>
+          </div>
+        </div>
+
+        <button pButton type="submit" label="Register" class="w-full p-3"></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 右侧信息展示 -->
+  <div class="flex-1 bg-primary-600 text-white p-8 hidden lg:flex flex-col justify-center">
+    <div class="max-w-lg mx-auto">
+      <img src="assets/images/TaxiDriver.png" alt="Taxi Driver" class="w-full h-auto mb-4">
+      <h2 class="text-3xl font-bold mb-4">Welcome to Our Platform</h2>
+      <p class="mb-8">Join our community and experience the best service we provide. Whether you're a driver or a customer, we're here to serve you.</p>
+    </div>
+  </div>
+</div>

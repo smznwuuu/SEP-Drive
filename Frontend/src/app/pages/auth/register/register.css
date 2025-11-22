@@ -1,0 +1,49 @@
+:host ::ng-deep {
+  display: block;
+}
+
+:host ::ng-deep .required::after {
+  content: ' *';
+  color: red;
+}
+
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+}
+
+:host ::ng-deep .p-selectbutton {
+  width: 100%;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  flex: 1;
+}
+
+:host ::ng-deep .p-password {
+  width: 100%;
+}
+
+:host ::ng-deep .p-password input {
+  width: 100%;
+}
+
+/* 移动端样式 */
+@media screen and (max-width: 640px) {
+  /* 调整表单间距 */
+  :host ::ng-deep .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+  }
+
+  /* 调整输入框样式 */
+  :host ::ng-deep input,
+  :host ::ng-deep .p-password input,
+  :host ::ng-deep .p-datepicker input {
+    font-size: 16px;
+    padding: 0.75rem;
+  }
+
+  /* 调整按钮样式 */
+  :host ::ng-deep .p-button {
+    padding: 0.75rem;
+  }
+}

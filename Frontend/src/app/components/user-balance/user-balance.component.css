@@ -1,0 +1,23 @@
+.balance-info {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.current-balance {
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.balance-amount {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #2563eb;
+}
+
+:host ::ng-deep .p-inputnumber {
+  width: 100%;
+}

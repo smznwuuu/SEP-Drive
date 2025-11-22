@@ -1,0 +1,50 @@
+:host ::ng-deep {
+  display: block;
+}
+
+:host ::ng-deep .required::after {
+  content: ' *';
+  color: red;
+}
+
+/* PC 端样式 */
+:host ::ng-deep .p-dialog .p-dialog-header {
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0 1.5rem 1.5rem;
+}
+
+/* 移动端样式 */
+@media screen and (max-width: 640px) {
+  :host ::ng-deep .p-dialog {
+    margin: 0;
+  }
+
+  :host ::ng-deep .p-dialog .p-dialog-header {
+    padding: 1rem;
+  }
+
+  :host ::ng-deep .p-dialog .p-dialog-content {
+    padding: 0 1rem 1rem;
+  }
+
+  /* 调整表单间距 */
+  :host ::ng-deep .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+  }
+
+  /* 调整输入框样式 */
+  :host ::ng-deep input,
+  :host ::ng-deep .p-password input,
+  :host ::ng-deep .p-calendar input {
+    font-size: 16px;
+    padding: 0.75rem;
+  }
+
+  /* 调整按钮样式 */
+  :host ::ng-deep .p-button {
+    padding: 0.75rem;
+  }
+}

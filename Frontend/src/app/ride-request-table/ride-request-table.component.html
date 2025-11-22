@@ -1,0 +1,204 @@
+<app-navbar></app-navbar>
+@if (isDriving$ | async) {
+  <h2>Super, dein Angebot wurde angenommen!</h2>
+  <h3>Bitte begib dich zur Fahrt-Simulation</h3>
+} @else {
+  @if ((dataSource.isLoading$ | async) || isCalculatingDistances){
+    <div style="text-align: center; padding: 20px;">
+      @if (dataSource.isLoading$ | async) {
+        <p>Lade Fahranfragen...</p>
+      }
+      @if (isCalculatingDistances) {
+        <p>Berechne Entfernungen zum Kundenstandort...</p>
+      }
+    </div>
+  }
+  <mat-card>
+  <!--  Größtenteils von Finn übernommen (create-ride-request.html)-->
+    <div class="driver-location-input" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
+
+      <label for="driverStartOption">Standort wählen:</label>
+      <select id="driverStartOption" [(ngModel)]="driverStartOption" name="driverStartOption"
+              [disabled]="isCalculatingDistances">
+        <option value="coords">Koordinaten eingeben</option>
+        <option value="current">Aktuelle Position verwenden</option>
+        <option value="address">Adresse suchen</option>
+        <option value="poi">POI suchen</option>
+      </select>
+
+      @if (driverStartOption === 'coords') {
+        <div style="margin-top: 10px;">
+          <label for="driverStartLat">Breite (Lat):</label>
+          <input id="driverStartLat" type="number" step="any" [(ngModel)]="driverLat" name="driverLat"
+                 (change)="calculateDistancesToDriver()" [disabled]="isCalculatingDistances" />
+
+          <label for="driverStartLng">Länge (Lng):</label>
+          <input id="driverStartLng" type="number" step="any" [(ngModel)]="driverLng" name="driverLng"
+                 (change)="calculateDistancesToDriver()" [disabled]="isCalculatingDistances" />
+          <button mat-raised-button color="primary" (click)="driverLocationSet = true; calculateDistancesToDriver()"
+                  [disabled]="!isValidCoordinate(driverLat) || !isValidCoordinate(driverLng) || isCalculatingDistances">
+            Standort festlegen
+          </button>
+        </div>
+      }
+
+      @if (driverStartOption === 'current') {
+        <div style="margin-top: 10px;">
+          <button mat-raised-button color="accent" (click)="useDriverCurrentLocation()"
+                  [disabled]="isCalculatingDistances">
+            <mat-icon>my_location</mat-icon> Aktuelle Position übernehmen
+          </button>
+        </div>
+      }
+
+      @if (driverStartOption === 'address') {
+        <div style="margin-top: 10px;">
+          <label for="searchDriverStartQuery">Adresse:</label>
+          <input id="searchDriverStartQuery" [(ngModel)]="searchDriverStartQuery" class="address" name="searchDriverStartQuery"
+                 [disabled]="isCalculatingDistances" />
+          <button mat-raised-button (click)="searchDriverAddress()"
+                  [disabled]="searchDriverStartQuery.length < 3 || isCalculatingDistances">
+            Adresse suchen
+          </button>
+          @if (driverStartSuggestions.length) {
+            <ul style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto; border: 1px solid #eee; margin-top: 5px;">
+              @for (s of driverStartSuggestions; track s.place_id) {
+                <li (click)="selectDriverAddressSuggestion(s)" style="padding: 5px; cursor: pointer; border-bottom: 1px solid #eee;">
+                  {{ s.display_name }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+
+      @if (driverStartOption === 'poi') {
+        <div style="margin-top: 10px;">
+          <label>Kategorie:</label>
+          <select [(ngModel)]="poiCategoryDriver" name="poiCategoryDriver"
+                  [disabled]="isCalculatingDistances">
+            <option value="restaurant">Restaurant</option>
+            <option value="theater">Theater</option>
+            <option value="museum">Museum</option>
+            <option value="supermarkt">Supermarkt</option>
+          </select>
+
+          <label>Ort:</label>
+          <input [(ngModel)]="poiOrtDriver" name="poiOrtDriver"
+                 [disabled]="isCalculatingDistances" />
+          <button mat-raised-button (click)="searchDriverPOIs()"
+                  [disabled]="poiOrtDriver.length < 3 || isCalculatingDistances">
+            POI suchen
+          </button>
+
+          @if (driverPoiSuggestions.length) {
+            <ul style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto; border: 1px solid #eee; margin-top: 5px;">
+              @for (poi of driverPoiSuggestions; track poi.place_id) {
+                <li (click)="selectDriverPOI(poi)" style="padding: 5px; cursor: pointer; border-bottom: 1px solid #eee;">
+                  {{ poi.display_name }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+
+      @if (driverLocationSet) {
+        <p style="margin-top: 15px;">
+          Dein Standort: {{ driverLat | number:'1.4-4' }}, {{ driverLng | number:'1.4-4' }}
+        </p>
+      } @else {
+        <p style="margin-top: 15px; color: gray;">
+          Bitte lege deinen Standort fest, um Entfernungen zu sehen.
+        </p>
+      }
+    </div>
+  <!--  Bis hier!-->
+    <button mat-raised-button color="primary" (click)="refreshTable()">
+      <mat-icon>refresh</mat-icon> aktualisieren
+    </button>
+
+    <table
+      mat-table
+      matSort
+      matSortActive="request_Id"
+      matSortDirection="asc"
+      matSortDisableClear
+      (matSortChange)="sortRequests($event)"
+      [dataSource]="dataSource"
+      class="ride-request-table"
+    >
+
+      <ng-container matColumnDef="request_Id">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Fahrt-ID</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.request_Id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Erstellt am</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.time }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="distanceToDriverStart">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Entfernung (km)</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.distanceToDriverStart }} km</td>
+      </ng-container>
+
+      <ng-container matColumnDef="customer_Name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Kunde</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.customer_Name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="rating">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Bewertung</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.rating.toFixed(1) }} Sterne</td>
+      </ng-container>
+
+      <ng-container matColumnDef="vehicle_Class">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fahrzeugklasse</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.vehicle_Class }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="distance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Gesamtdistanz (km)</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.distance.toFixed(2) }} km</td>
+      </ng-container>
+
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Gesamtdauer (min)</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.duration }} min</td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Preis (€)</th>
+        <td mat-cell *matCellDef="let anfrage">{{ anfrage.price  }} €</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Aktionen</th>
+        <td mat-cell *matCellDef="let anfrage">
+          @if (!anfrage.hasOfferedForThisRequest) {
+            <button mat-raised-button color="primary"
+                    (click)="submitOffer(anfrage)"
+                    [disabled]="isSubmittingOffer || currentActiveOfferRequestId !== null">
+              Angebot abgeben
+            </button>
+          }
+          @else if (anfrage.hasOfferedForThisRequest) {
+            <button mat-raised-button color="warn"
+                    (click)="cancelOffer(anfrage)"
+                    [disabled]="isSubmittingOffer">
+              Angebot zurückziehen
+            </button>
+            <button mat-raised-button color="primary" [routerLink]="['/chat', anfrage.customerId]">
+              Chat
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="spalten"></tr>
+      <tr mat-row *matRowDef="let row; columns: spalten;"></tr>
+    </table>
+  </mat-card>
+}

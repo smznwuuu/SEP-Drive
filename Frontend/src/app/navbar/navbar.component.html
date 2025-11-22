@@ -1,0 +1,19 @@
+<header class="navbar">
+
+  <div class="navbar-left">
+    <a routerLink="/dashboard">Start</a>
+    @if (!isDriver()){
+      <a routerLink="/create-ride-request">Neue Fahranfrage</a>
+    }
+    @if (isDriver()){
+      <a routerLink="/customer-requests">Kunden Fahranfragen</a>
+    }
+    <a routerLink="/ride-simulation">Fahrt-Simulation</a>
+  </div>
+  <div class="navbar-right">
+    <a [routerLink]="['/profil', username]">
+      {{ username }}
+    </a>
+  </div>
+
+</header>

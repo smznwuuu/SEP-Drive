@@ -1,0 +1,35 @@
+<app-navbar></app-navbar>
+<h1 class="centeredHeading">Ihre Fahranfrage</h1>
+<div  *ngIf="!rideRequest; else activeRequest" class="noRequestContainer">
+  <p>Keine aktive Fahranfrage</p>
+</div>
+
+<ng-template #activeRequest>
+  <div *ngIf="rideRequest">
+  <div class="requestContainer">
+    <p>Start: {{startAddress}} ({{rideRequest.waypoints[0].latitude}}, {{rideRequest.waypoints[0].longitude}})</p>
+    <div *ngFor="let wp of zwischenStopps!; let i = index">
+      <p>Zwischenstopp {{i+1}}: ({{zwischenStopps![i].latitude}},{{zwischenStopps![i].longitude}})</p>
+
+    </div>
+    <p>Ziel: {{destAddress}} ({{rideRequest.waypoints[rideRequest.waypoints.length-1].latitude}}, {{rideRequest.waypoints[rideRequest.waypoints.length-1].longitude}})</p>
+    <p>Gewählte Fahrzeugklasse: {{rideRequest.vehicleClass}}</p>
+    <p>Erwartete Distanz: {{ rideRequest.distance }} km</p>
+    <p>Erwartete Dauer: {{ rideRequest.duration }} min</p>
+    <p>Erwarteter Preis: {{ rideRequest.price | currency:'EUR':'symbol' }}</p>
+    <p>Status: {{status}}</p>
+
+
+    <button class="deleteButton" (click)="deleteRequest()">Fahranfrage löschen</button>
+
+    <div class="map-container">
+      <app-map-visualization [coords]="rideRequest!.waypoints">
+      </app-map-visualization>
+    </div>
+
+  </div>
+  </div>
+
+
+
+</ng-template>

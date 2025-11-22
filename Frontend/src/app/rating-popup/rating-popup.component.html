@@ -1,0 +1,40 @@
+<h1>Bewerten sie die Fahrt</h1>
+<mat-dialog-content>
+  <div *ngIf="data.role == 'CUSTOMER'; else driverBlock ">
+    <div class="slider-container">
+      <p>Wie zufrieden waren sie mit ihrem Fahrer?</p>
+      <label for="slider">Ihre Bewertung: {{rating}} / 5</label>
+      <input
+        type="range"
+        id="slider"
+        min="1"
+        max="5"
+        [(ngModel)]="rating"
+      >
+    </div>
+    <div class="buttons-container">
+      <button (click) = "onCancel()">Abbrechen</button>
+      <button (click) = "onRate()">Bewerten</button>
+    </div>
+  </div>
+
+  <ng-template #driverBlock>
+    <div class="slider-container">
+      <p>Wie zufrieden waren sie mit ihrem Kunden?</p>
+      <label for="slider">Ihre Bewertung: {{rating}} / 5</label>
+      <input
+        type="range"
+        id="slider"
+        min="1"
+        max="5"
+        [(ngModel)]="rating"
+      >
+    </div>
+    <div class="buttons-container">
+      <button (click) = "onCancel()">Abbrechen</button>
+      <button (click) = "onRate()">Bewerten</button>
+    </div>
+  </ng-template>
+
+
+</mat-dialog-content>

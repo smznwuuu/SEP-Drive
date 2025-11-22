@@ -1,0 +1,55 @@
+<p-toast></p-toast>
+
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '450px'}"
+  header="Kontostand des Benutzers"
+  (onHide)="close()">
+
+  <div class="flex flex-col gap-4">
+    <div class="flex">
+      <div class="current-balance">Aktueller Kontostand:</div>
+      <div class="balance-amount">{{currentBalance | currency:'EUR':'symbol':'1.2-2'}}</div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button pButton label="aktualisieren" (click)="refresh(true)" class="p-button-primary"></button>
+      <button pButton label="zurück" (click)="close()" class="p-button-outlined"></button>
+      <button *ngIf="role === 'CUSTOMER'" pButton label="aufladen" (click)="showTop()" class="p-button-primary"></button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="visibleTop"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '450px'}"
+  header="Aufladen"
+  (onHide)="closeTop()">
+
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label for="amount">Betrag zum Aufladen:</label>
+      <p-inputNumber id="amount"
+                     [(ngModel)]="amountToAdd"
+                     [min]="0"
+                     [max]="10000"
+                     mode="currency"
+                     currency="EUR"
+                     [minFractionDigits]="2"
+                     [maxFractionDigits]="2"
+                     class="w-full">
+      </p-inputNumber>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button pButton label="zurück" (click)="closeTop()" class="p-button-outlined"></button>
+      <button pButton label="bestätigen" (click)="addFunds()" class="p-button-primary" [disabled]="amountToAdd <= 0"></button>
+    </div>
+  </div>
+</p-dialog>

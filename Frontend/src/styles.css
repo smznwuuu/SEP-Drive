@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
+@import "tailwindcss-primeui";
+
+
+
+.p-datatable-mask {
+  @apply backdrop-blur-sm! bg-surface-0/20! dark:bg-surface-900/20!;
+}
+
+.p-datatable-loading-icon {
+  @apply text-primary!;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

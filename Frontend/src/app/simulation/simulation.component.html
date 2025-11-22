@@ -1,0 +1,106 @@
+<app-navbar></app-navbar>
+<h1 class = "centeredHeading">Fahrt-Simulation</h1>
+
+<ng-container *ngIf="!otherSimStarted, else otherSimStartedContainer">
+  <div *ngIf="rideRequest && !finished; else noRideRequest">
+    <div *ngIf="rideRequest.driverID; else noDriver">
+      <div class="price-container">
+        <p>Erwarteter Preis: {{rideRequest!.price!}}€</p>
+        <p>Tatsächlicher Preis: {{price}}€</p>
+        <p>Distanz: {{distance}} km</p>
+        <p> (Bitte beachten sie, dass der Preis aufgrund geänderter Fahrzeugklasse vom ursprünglichen Preis abweichen kann)</p>
+      </div>
+      <div class="buttons-container">
+
+        <div class="buttonGroup">
+          <button class="buttonStyles startButton" (click) = "onStart()">Start</button>
+          <button *ngIf="!isPaused; else paused" class="buttonStyles pauseButton" (click)="onPause()">Pause</button>
+          <ng-template #paused>
+            <button class="buttonStyles pauseButton" (click) = "onContinue()">continue</button>
+          </ng-template>
+        </div>
+
+
+        <div class="sliderContainer">
+          <label for="slider"> Simulationsgeschwindigkeit: {{simulationSpeed}} sek.</label>
+          <input
+            type = "range"
+            id="slider"
+            min="3"
+            max="30"
+            [(ngModel)]="simulationSpeed"
+            (change)="onSimSpeedChange()"
+          >
+        </div>
+
+        <ng-container *ngIf="isPaused && currentUser.role == 'CUSTOMER'">
+          <div *ngFor="let wp of newWaypoints; let i = index">
+            <div class="waypointInput">
+              <app-waypoint-input
+                [label]="'Zwischenstopp ' + i"
+                [allowCurrentLocation]="false"
+                [(coordinate)]="newWaypoints[i]"
+              >
+              </app-waypoint-input>
+              <button type="button" (click)="removeWaypoint(i)" class="removeButton">Entfernen</button>
+            </div>
+          </div>
+
+          <div class="waypointButtons">
+            <button type="button" (click)="addWaypoint()" class="addButton"> Zwischenstopp hinzufügen</button>
+            <button *ngIf="newWaypoints.length > 0" type="button" (click)="confirmNewWayPoints()" class="confirmButton"> Neue Zwischenstopps übernehmen</button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isPaused && currentUser.role === 'CUSTOMER' && allWaypoints.length > 1">
+          <app-waypoint-input
+            [label]="'Ziel ändern'"
+            [allowCurrentLocation]="false"
+            [(coordinate)]="newDestination"
+            class="waypointInput">
+          </app-waypoint-input>
+          <button type="button" (click)="confirmNewDestination()" class="destButton"> Ziel aktualisieren</button>
+        </ng-container>
+
+      </div>
+
+
+      <div class = "map-container">
+
+        <app-map-visualization [coords]="allWaypoints"
+        (routeLoaded)="onRouteLoaded()"
+        >
+        </app-map-visualization>
+
+      </div>
+
+      <ng-container *ngIf="allWaypoints.length > 2 && currentUser.role == 'CUSTOMER' && isPaused">
+        <div class="stopList">
+          <h3>Ihre Zwischenstopps:</h3>
+          <div *ngFor="let wp of zwischenstopps; let i = index">
+            <p>Zwischenstopp {{i + 1}}: (Lat: {{wp.latitude}}, Lng: {{wp.longitude}})</p>
+            <button class="removeButton" (click)="removeExistingStop(wp)">Entfernen</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-template #noRideRequest>
+    <div class ="noRequestContainer">
+      <p>Keine Aktive Fahranfrage</p>
+    </div>
+  </ng-template>
+
+<ng-template #noDriver>
+  <div class ="noRequestContainer">
+    <p>Kein Fahrer zugewiesen</p>
+  </div>
+</ng-template>
+</ng-container>
+
+<ng-template #otherSimStartedContainer>
+    <div class="noRequestContainer">
+        <p>Eine andere Simulation läuft bereits. Bitte warten Sie bis diese abgeschlossen ist</p>
+    </div>
+</ng-template>

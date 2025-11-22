@@ -1,0 +1,52 @@
+<app-navbar></app-navbar>
+<!--async pipe abonniert observable, speichert ergebnis in user-->
+  <section *ngIf="userProfile$ | async as user" class="profil">
+    <img [src]="user.profilepicture || 'assets/profile-placeholder.webp'" alt="Profilbild" class="profilbild">
+    @if (isOwnProfile()){
+      <h2>Hallo, {{ user.firstname}} {{ user.lastname }} ({{ user.username }})</h2>
+    } @else {
+      <h2>{{ user.firstname}} {{ user.lastname }}</h2>
+      <p>Benutzername: {{ user.username }}</p>
+    }
+    <p>E-Mail: {{ user.email }}</p>
+    <p>Geburtsdatum: {{ user.birthdate }}</p>
+    <p>Rating: {{ user.rating.toFixed(1) }} Sterne</p>
+    <p>Fahrten: {{ user.totalRides }}</p>
+
+    <!--geht auch mit if-->
+    @switch (user.role) {
+      @case ('DRIVER') {
+        <p>Auto-Klasse: {{ user.carClass }}</p>
+        <p>Rolle: Fahrer</p>
+      }
+      @case ('CUSTOMER'){
+        <p>Rolle: Kunde</p>
+      }
+    }
+    @if (isOwnProfile()) {
+      <div class="profile-actions-left">
+        <a [routerLink]="['/ride-history', user.username]">Fahrthistorie</a>
+        @if (user.role==='DRIVER'){
+          <a [routerLink]="['/trip-statistics', user.username]">Statistiken</a>
+        }
+      </div>
+      <div class="profile-actions-right">
+        <!--        von Zheyuan-->
+        <div class="button-wrap">
+          <p-button label="Geldkonto" (onClick)="openBalanceDialog()" />
+        </div>
+        <app-user-balance
+          *ngIf="showBalanceDialog"
+          [username]="user.username"
+          [role]="user.role"
+          (onClose)="handleCloseDialog()">
+        </app-user-balance>
+        <!--        bis hier-->
+      </div>
+    }
+
+  </section>
+
+@if (errorMessage) {
+  <p class="error">{{ errorMessage }}</p>
+}

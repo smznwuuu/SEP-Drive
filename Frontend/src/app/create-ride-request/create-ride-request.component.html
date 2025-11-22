@@ -1,0 +1,63 @@
+<app-navbar></app-navbar>
+<div id="ride-request-container">
+<h2>Fahranfrage erstellen</h2>
+
+<form (ngSubmit)="onSubmit()" #rideForm="ngForm">
+
+  <!--startpunkt-->
+  <app-waypoint-input
+    label="Startpunkt"
+    [allowCurrentLocation]="true"
+    [(coordinate)]="waypoints[0]">
+  </app-waypoint-input>
+
+  <!--zwischenstopps-->
+  <div *ngFor="let wp of waypoints; let i = index">
+    <ng-container *ngIf="i > 0 && i < waypoints.length - 1">
+      <app-waypoint-input
+        [label]="'Zwischenstopp ' + i"
+        [allowCurrentLocation]="false"
+        [(coordinate)]="waypoints[i]">
+      </app-waypoint-input>
+      <button type="button" (click)="removeWaypoint(i)">Entfernen</button>
+    </ng-container>
+  </div>
+
+  <button type="button" (click)="addWaypoint()">➕ Zwischenstopp hinzufügen</button>
+
+  <!--zielpunkt-->
+  <app-waypoint-input
+    label="Zielpunkt"
+    [allowCurrentLocation]="false"
+    [(coordinate)]="waypoints[waypoints.length - 1]">
+  </app-waypoint-input>
+
+  <hr />
+
+  <!--fahrzeugklasse-->
+  <label for="vehicleClass">Fahrzeugklasse:</label>
+  <select id="vehicleClass" [(ngModel)]="vehicleClass" name="vehicleClass" required>
+    <option *ngFor="let option of vehicleClasses" [ngValue]="option">
+      {{ option }}
+    </option>
+  </select>
+
+  <br /><br />
+  <button type="submit" [disabled]="rideForm.form.invalid">Fahranfrage erstellen</button>
+
+  <button type="button" (click)="previewRoute()">Route planen</button>
+
+  <!--routenvorschau -->
+  <div *ngIf="routePlanned">
+    <p><strong>Distanz:</strong> {{ distance }} km</p>
+    <p><strong>Dauer:</strong> {{ duration }} min</p>
+    <p><strong>Preis:</strong> {{ price }} €</p>
+    <div class="map-container">
+      <app-map-visualization
+        *ngIf="routeCoords.length >= 2 && routePlanned"
+        [coords]="routeCoords">
+      </app-map-visualization>
+    </div>
+  </div>
+</form>
+</div>

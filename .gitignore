@@ -1,0 +1,7 @@
+.idea/
+/node_modules/
+.angular/cache/
+.angular/config.json
+
+.idea
+.angular/
